@@ -6,6 +6,9 @@ describe Movie do
         expect( Tmdb::Movie).to receive(:find).with('Inception')
         Movie.find_in_tmdb('Inception')
       end
+      it 'should convert the result into hashes' do
+        expect(Movie.find_in_tmdb('Inception').class).to equal(Array)
+      end
     end
     context 'with invalid key' do
       it 'should raise InvalidKeyError if key is missing or invalid' do
@@ -14,4 +17,15 @@ describe Movie do
       end
     end
   end
+  
+  describe 'create movies into database' do
+    context 'valid id' do
+      it 'should create a movie' do
+        fake_movie = {:title=>nil, :release_date=>nil, :description=>nil}
+        expect(Movie).to receive(:create!).with(fake_movie)
+        Movie.create_from_tmdb('12345')
+      end
+    end
+  end
+        
 end

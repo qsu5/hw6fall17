@@ -31,6 +31,8 @@ class MoviesController < ApplicationController
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
     @movies = Movie.where(rating: @selected_ratings.keys).order(ordering)
+    
+    @search_terms = params[:search_terms] || session[:search_terms] || {}
   end
 
   def new
@@ -62,7 +64,32 @@ class MoviesController < ApplicationController
   end
   
   def search_tmdb
-    @movies=Movie.find_in_tmdb(params[:search_terms])
+    if params[:search_terms] == ""
+      flash[:notice] = 'Invalid search term'
+      redirect_to movies_path
+    else
+      @newMovie=Movie.find_in_tmdb(params[:search_terms])
+      @keyWord = params[:search_terms]
+      if not @newMovie.empty?
+        puts "going to redirect_to"
+        #redirect_to movies_search_tmdb_path
+      else
+        puts "found movie params is empty"
+        flash[:notice] = "No matching movies were found on TMDb"
+        redirect_to movies_path
+      end
+    end
+  end
+  
+  def add_tmdb
+    puts "In the add_tmdb"
+    if params[:tmdb_movies] == nil
+      flash[:notice] = 'No movies selected'
+      redirect_to movies_path
+    else
+      params[:tmdb_movies].keys.each {|c| Movie.create_from_tmdb(c)}
+      redirect_to movies_path
+    end
   end
 
 end
