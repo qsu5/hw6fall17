@@ -25,6 +25,11 @@ describe Movie do
         expect(Movie).to receive(:create!).with(fake_movie)
         Movie.create_from_tmdb('12345')
       end
+      
+      it 'should find US rating if the rating is not NR' do 
+        allow(Movie).to receive(:create!)
+        expect(Movie.create_from_tmdb('181808')[:rating]).to eq("NR")
+      end
     end
   end
         

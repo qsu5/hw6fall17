@@ -88,6 +88,7 @@ class MoviesController < ApplicationController
       redirect_to movies_path
     else
       params[:tmdb_movies].keys.each {|c| Movie.create_from_tmdb(c)}
+      flash[:notice] = 'Movies successfully added to Rotten Potatoes'
       redirect_to movies_path
     end
   end

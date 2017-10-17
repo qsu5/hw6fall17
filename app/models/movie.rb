@@ -19,8 +19,8 @@ class Movie::InvalidKeyError < StandardError ; end
           movie[:tmdb_id] = item.id
           movie[:title] = item.title
           movie[:release_date] = item.release_date
-          if movie[:release_date] == nil
-            movie[:release_date] = 'N/A'
+          if movie[:release_date] == ""
+            movie[:release_date] = "xxxx-xx-xx"
           end
           movie[:description] = item.overview
   
@@ -55,6 +55,9 @@ class Movie::InvalidKeyError < StandardError ; end
     data = Tmdb::Movie.detail(id)
     movieparams[:title] = data["title"]
     movieparams[:release_date] = data["release_date"]
+    if movieparams[:release_date] == ""
+      movieparams[:release_date] = "1111-11-11"
+    end
     movieparams[:description] = data["overview"]
     
     data2 = Tmdb::Movie.releases(id)
@@ -69,6 +72,8 @@ class Movie::InvalidKeyError < StandardError ; end
       end
     end
     self.create!(movieparams) 
+    return movieparams
+    
   end
 
 end
